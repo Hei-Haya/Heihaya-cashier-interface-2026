@@ -219,6 +219,62 @@
                     statusMsg.innerText = "Network error. Please try again.";
                     statusMsg.classList.remove('hidden');
                 });
+            // Add this to your existing window.onload function
+        window.onload = () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = ("0" + (today.getMonth() + 1)).slice(-2);
+            const day = ("0" + today.getDate()).slice(-2);
+            
+            // Set Cashier Prefix
+            todayPrefix = "IM-" + year + "-" + month + "-" + day + "-";
+            document.getElementById('prefix-display').innerText = todayPrefix;
+
+            // Load initial dashboard data
+            loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
+            loadDashboardStats(`IM-${year}-${month}`, 'month');
+        };
+
+        function loadDashboardStats(filterPrefix, target) {
+            fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`${target}-income`).innerText = `₹${data.income.toFixed(2)}`;
+                    document.getElementById(`${target}-count`).innerText = `${data.count} orders`;
+                }).catch(err => console.error("Error loading stats:", err));
+        }
+
+        function fetchReport(type) {
+            let filterPrefix = "";
+            let displayLabel = "";
+
+            if (type === 'day') {
+                const dateVal = document.getElementById('search-date').value; // Format: YYYY-MM-DD
+                if (!dateVal) return alert("Please select a date first.");
+                filterPrefix = `IM-${dateVal}`;
+                displayLabel = `Sales on ${dateVal}`;
+            } else if (type === 'month') {
+                const monthVal = document.getElementById('search-month').value; // Format: YYYY-MM
+                if (!monthVal) return alert("Please select a month first.");
+                filterPrefix = `IM-${monthVal}`;
+                displayLabel = `Sales for ${monthVal}`;
+            }
+
+            const resultBox = document.getElementById('search-result');
+            document.getElementById('result-label').innerText = "Loading...";
+            resultBox.classList.remove('hidden');
+
+            fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result-label').innerText = displayLabel;
+                    document.getElementById('result-income').innerText = `₹${data.income.toFixed(2)}`;
+                    document.getElementById('result-count').innerText = `${data.count} orders completed`;
+                })
+                .catch(err => {
+                    document.getElementById('result-label').innerText = "Error fetching data.";
+                });
+        }
         }
     </script>
 </body>
