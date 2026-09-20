@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hei Haya Billing Portal</title>
+    <title>Hei Haya Cafe Billing Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -34,7 +34,7 @@
     <!-- CASHIER UI -->
     <div id="ui-section" class="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 border border-gray-100">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Cashier Portal</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Hei Haya Cafe Billing Portal</h1>
             <p class="text-gray-500 mt-1">Print GST Inclusive Receipts</p>
         </div>
 
@@ -88,7 +88,6 @@
     </div>
 
     <script>
-<script>
         // ADD YOUR DEPLOYED GOOGLE SCRIPT URL HERE
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEUv3IdeCMlRyCkxrkOA5-Rf6Kjr9e7psgkfCIgO9R8JE0e9pGeBzxZ_DFv6Zhcoc/exec";
         
@@ -113,6 +112,12 @@
                 statusMsg.innerText = "Please enter an order number.";
                 statusMsg.classList.remove('hidden');
                 return;
+            }
+
+            const enteredPin = prompt("Enter Cashier PIN to print this receipt:");
+            if (enteredPin !== CASHIER_PIN) {
+                alert("Incorrect PIN. Printing cancelled.");
+                return; 
             }
 
             // Format input to 3 digits (e.g., '5' becomes '005')
