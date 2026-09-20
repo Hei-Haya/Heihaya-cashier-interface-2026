@@ -133,21 +133,29 @@
     </div>
 
     <script>
+        <script>
         // ADD YOUR DEPLOYED GOOGLE SCRIPT URL HERE
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpuk3KCAqIrqXSNsu2OrfZNQDVtqV6U5y6pIX0hjXeLE44LM-ODvyM6Bez6Heav9o/exec";
-        
         const CASHIER_PIN = "3333";
-
         let todayPrefix = "";
 
-        // On Load: Generate today's prefix automatically
+        // 1. Initialize Page and Dashboard on Load
         window.onload = () => {
             const today = new Date();
-            const dateStr = today.getFullYear() + "-" + ("0" + (today.getMonth() + 1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2);
-            todayPrefix = "IM-" + dateStr + "-";
+            const year = today.getFullYear();
+            const month = ("0" + (today.getMonth() + 1)).slice(-2);
+            const day = ("0" + today.getDate()).slice(-2);
+            
+            // Set Cashier Prefix
+            todayPrefix = `IM-${year}-${month}-${day}-`;
             document.getElementById('prefix-display').innerText = todayPrefix;
+
+            // Load initial dashboard data automatically
+            loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
+            loadDashboardStats(`IM-${year}-${month}`, 'month');
         };
 
+        // 2. Main Print Function
         function fetchAndPrint() {
             const seqInput = document.getElementById('seq-input').value.trim();
             const statusMsg = document.getElementById('status-msg');
@@ -165,16 +173,13 @@
                 return; 
             }
 
-            // Format input to 3 digits (e.g., '5' becomes '005')
             const formattedSeq = seqInput.padStart(3, '0');
             const fullOrderId = todayPrefix + formattedSeq;
 
-            // UI Loading state
             statusMsg.classList.add('hidden');
             btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Finding Order...`;
             btn.disabled = true;
 
-            // Fetch data from Google Apps Script
             fetch(`${GOOGLE_SCRIPT_URL}?orderId=${fullOrderId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -187,30 +192,24 @@
                         return;
                     }
 
-                    // Calculate Reverse GST
                     const rawTotal = parseFloat(data.total || "0");
                     const basePrice = rawTotal / 1.05;
                     const gstAmount = rawTotal - basePrice;
                     const cgst = gstAmount / 2;
 
-                    // Inject data into print layout
                     document.getElementById('p-order').innerText = data.orderId;
                     document.getElementById('p-date').innerText = new Date(data.date).toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'});
                     document.getElementById('p-name').innerText = data.name;
                     document.getElementById('p-table').innerText = data.table;
                     document.getElementById('p-items').innerText = data.items;
-                    
                     document.getElementById('p-base').innerText = basePrice.toFixed(2);
                     document.getElementById('p-cgst').innerText = cgst.toFixed(2);
                     document.getElementById('p-sgst').innerText = cgst.toFixed(2);
                     document.getElementById('p-total').innerText = rawTotal.toFixed(2);
 
-                    // Trigger browser print
                     document.getElementById('print-section').style.display = 'block';
                     window.print();
-                    document.getElementById('print-section').style.display = ''; // Reset after print
-                    
-                    // Clear input for next order
+                    document.getElementById('print-section').style.display = ''; 
                     document.getElementById('seq-input').value = '';
                 })
                 .catch(err => {
@@ -219,22 +218,9 @@
                     statusMsg.innerText = "Network error. Please try again.";
                     statusMsg.classList.remove('hidden');
                 });
-            // Add this to your existing window.onload function
-        window.onload = () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = ("0" + (today.getMonth() + 1)).slice(-2);
-            const day = ("0" + today.getDate()).slice(-2);
-            
-            // Set Cashier Prefix
-            todayPrefix = "IM-" + year + "-" + month + "-" + day + "-";
-            document.getElementById('prefix-display').innerText = todayPrefix;
+        }
 
-            // Load initial dashboard data
-            loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
-            loadDashboardStats(`IM-${year}-${month}`, 'month');
-        };
-
+        // 3. Analytics Loading Function
         function loadDashboardStats(filterPrefix, target) {
             fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}`)
                 .then(response => response.json())
@@ -244,17 +230,18 @@
                 }).catch(err => console.error("Error loading stats:", err));
         }
 
+        // 4. Analytics Custom Search Function
         function fetchReport(type) {
             let filterPrefix = "";
             let displayLabel = "";
 
             if (type === 'day') {
-                const dateVal = document.getElementById('search-date').value; // Format: YYYY-MM-DD
+                const dateVal = document.getElementById('search-date').value; 
                 if (!dateVal) return alert("Please select a date first.");
                 filterPrefix = `IM-${dateVal}`;
                 displayLabel = `Sales on ${dateVal}`;
             } else if (type === 'month') {
-                const monthVal = document.getElementById('search-month').value; // Format: YYYY-MM
+                const monthVal = document.getElementById('search-month').value; 
                 if (!monthVal) return alert("Please select a month first.");
                 filterPrefix = `IM-${monthVal}`;
                 displayLabel = `Sales for ${monthVal}`;
@@ -274,7 +261,6 @@
                 .catch(err => {
                     document.getElementById('result-label').innerText = "Error fetching data.";
                 });
-        }
         }
     </script>
 </body>
