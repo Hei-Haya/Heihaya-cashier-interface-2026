@@ -56,6 +56,51 @@
         <div id="status-msg" class="mt-4 text-center text-sm font-semibold text-red-600 hidden"></div>
     </div>
 
+    <!-- ANALYTICS DASHBOARD -->
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 border border-gray-100 mt-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Business Analytics</h2>
+        
+        <!-- Quick Stats (Loads Today & This Month automatically) -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-xl text-center border border-blue-100">
+                <p class="text-xs font-bold text-blue-600 uppercase">Today's Income</p>
+                <p id="today-income" class="text-2xl font-black text-gray-900">₹0</p>
+                <p id="today-count" class="text-sm text-gray-500">0 orders</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl text-center border border-green-100">
+                <p class="text-xs font-bold text-green-600 uppercase">This Month</p>
+                <p id="month-income" class="text-2xl font-black text-gray-900">₹0</p>
+                <p id="month-count" class="text-sm text-gray-500">0 orders</p>
+            </div>
+        </div>
+
+        <!-- Custom Search -->
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Search Specific Day</label>
+                <div class="flex gap-2">
+                    <input type="date" id="search-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-blue-500">
+                    <button onclick="fetchReport('day')" class="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-gray-800">Check</button>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Search Specific Month</label>
+                <div class="flex gap-2">
+                    <input type="month" id="search-month" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-blue-500">
+                    <button onclick="fetchReport('month')" class="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-gray-800">Check</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Search Result -->
+        <div id="search-result" class="mt-4 p-4 bg-gray-100 rounded-xl text-center hidden">
+            <p id="result-label" class="text-sm font-bold text-gray-500 uppercase"></p>
+            <p id="result-income" class="text-2xl font-black text-gray-900 mt-1">₹0</p>
+            <p id="result-count" class="text-sm text-gray-600 mt-1">0 orders completed</p>
+        </div>
+    </div>
+
     <!-- HIDDEN THERMAL PRINT LAYOUT -->
     <div id="print-section" class="hidden">
         <h2 style="text-align: center; margin-bottom: 2px; font-size: 18px; font-family: sans-serif; font-weight: bold;">HEI HAYA CAFE</h2>
