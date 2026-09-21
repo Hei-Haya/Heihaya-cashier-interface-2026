@@ -271,6 +271,9 @@
 
         // 1.6 Refresh Quick Stats Function
         function refreshQuickStats() {
+            // Spin the refresh icon
+            document.getElementById('refresh-btn').classList.add('animate-spin');
+
             // Show loading states
             document.getElementById('today-income').innerText = "Loading...";
             document.getElementById('month-income').innerText = "Loading...";
