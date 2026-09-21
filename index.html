@@ -334,6 +334,23 @@
                     document.getElementById('preview-id').innerText = data.orderId;
                     document.getElementById('preview-items').innerText = data.items;
                     document.getElementById('preview-total').innerText = `₹${rawTotal.toFixed(2)}`;
+
+                    // Generate Dynamic UPI QR Code
+                    const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${rawTotal.toFixed(2)}&cu=INR`;
+                    
+                    document.getElementById('qr-amount').innerText = rawTotal.toFixed(2);
+                    document.getElementById('display-upi-id').innerText = UPI_ID;
+                    
+                    const qrContainer = document.getElementById('upi-qr-container');
+                    qrContainer.innerHTML = ""; // Clear previous QR
+                    new QRCode(qrContainer, {
+                        text: upiString,
+                        width: 130,
+                        height: 130,
+                        colorDark : "#ea580c", // Brand Orange
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.M
+                    });
                     
                     // Reveal Confirmation Box
                     document.getElementById('preview-section').classList.remove('hidden');
