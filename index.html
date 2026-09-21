@@ -198,9 +198,8 @@
             currentMonth = ("0" + (today.getMonth() + 1)).slice(-2);
             currentDay = ("0" + today.getDate()).slice(-2);
             
-            // Set Cashier Prefix dynamically
-            todayPrefix = `IM-${currentYear}-${currentMonth}-${currentDay}-`;
-            document.getElementById('prefix-display').innerText = todayPrefix;
+            // Set the new date picker to today's date automatically
+            document.getElementById('order-date').value = `${currentYear}-${currentMonth}-${currentDay}`;
         });
 
         // 1.5 Unlock Analytics Function
