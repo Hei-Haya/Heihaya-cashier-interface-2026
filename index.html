@@ -377,9 +377,11 @@
         }
 
         // 3. Analytics Loading Function
+        let activeLoadCount = 0; // Track parallel requests
+
         function loadDashboardStats(filterPrefix, target) {
-            // Generate a unique timestamp to bypass browser cache
             const timestamp = new Date().getTime();
+            activeLoadCount++; // Increment counter when a request starts
             
             fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}&t=${timestamp}`)
                 .then(response => response.json())
@@ -387,16 +389,23 @@
                     document.getElementById(`${target}-income`).innerText = `₹${data.income.toFixed(2)}`;
                     document.getElementById(`${target}-count`).innerText = `${data.count} orders`;
                     
-                    // Stop spinning when complete
-                    document.getElementById('refresh-btn').classList.remove('animate-spin');
+                    trackLoadCompletion();
                 }).catch(err => {
                     console.error("Error loading stats:", err);
                     document.getElementById(`${target}-income`).innerText = "Error";
                     document.getElementById(`${target}-count`).innerText = "Failed";
                     
-                    // Stop spinning on failure
-                    document.getElementById('refresh-btn').classList.remove('animate-spin');
+                    trackLoadCompletion();
                 });
+        }
+
+        // Helper to stop spinning only when ALL requests finish
+        function trackLoadCompletion() {
+            activeLoadCount--;
+            if (activeLoadCount <= 0) {
+                activeLoadCount = 0;
+                document.getElementById('refresh-btn').classList.remove('animate-spin');
+            }
         }
 
 
