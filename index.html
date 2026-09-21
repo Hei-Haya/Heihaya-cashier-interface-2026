@@ -140,20 +140,20 @@
         let todayPrefix = "";
 
         // 1. Initialize Page and Dashboard on Load
-        window.onload = () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = ("0" + (today.getMonth() + 1)).slice(-2);
-            const day = ("0" + today.getDate()).slice(-2);
-            
-            // Set Cashier Prefix
-            todayPrefix = `IM-${year}-${month}-${day}-`;
-            document.getElementById('prefix-display').innerText = todayPrefix;
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = ("0" + (today.getMonth() + 1)).slice(-2);
+    const day = ("0" + today.getDate()).slice(-2);
+    
+    // Set Cashier Prefix dynamically
+    todayPrefix = `IM-${year}-${month}-${day}-`;
+    document.getElementById('prefix-display').innerText = todayPrefix;
 
-            // Load initial dashboard data automatically
-            loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
-            loadDashboardStats(`IM-${year}-${month}`, 'month');
-        };
+    // Load initial dashboard data automatically
+    loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
+    loadDashboardStats(`IM-${year}-${month}`, 'month');
+});
 
         // 2. Main Print Function
         function fetchAndPrint() {
