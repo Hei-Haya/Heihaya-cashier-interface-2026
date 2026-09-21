@@ -369,6 +369,7 @@
                 });
         }
 
+
         // 4. Analytics Custom Search Function
         function fetchReport(type) {
             let filterPrefix = "";
@@ -386,21 +387,23 @@
                 displayLabel = `Sales for ${monthVal}`;
             }
 
-            const resultBox = document.getElementById('search-result');
-            document.getElementById('result-label').innerText = "Loading...";
+            // Dynamically target the correct inline box based on the button clicked
+            const resultBox = document.getElementById(`${type}-result`);
+            document.getElementById(`${type}-result-label`).innerText = "Loading...";
             resultBox.classList.remove('hidden');
 
             fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('result-label').innerText = displayLabel;
-                    document.getElementById('result-income').innerText = `₹${data.income.toFixed(2)}`;
-                    document.getElementById('result-count').innerText = `${data.count} orders completed`;
+                    document.getElementById(`${type}-result-label`).innerText = displayLabel;
+                    document.getElementById(`${type}-result-income`).innerText = `₹${data.income.toFixed(2)}`;
+                    document.getElementById(`${type}-result-count`).innerText = `${data.count} orders completed`;
                 })
                 .catch(err => {
-                    document.getElementById('result-label').innerText = "Error fetching data.";
+                    document.getElementById(`${type}-result-label`).innerText = "Error fetching data.";
                 });
         }
+        
         // 5. Generate Date Range PDF Report
         function generateRangeReport() {
             const start = document.getElementById('range-start').value;
