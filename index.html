@@ -342,7 +342,9 @@
 
                     // Populate UI Preview Box
                     document.getElementById('preview-name').innerText = data.name || "Unknown Customer";
+                    document.getElementById('preview-table').innerText = `(Table ${data.table || "-"})`;
                     document.getElementById('preview-id').innerText = data.orderId;
+                    document.getElementById('preview-items').innerText = data.items;
                     document.getElementById('preview-total').innerText = `₹${rawTotal.toFixed(2)}`;
                     
                     // Reveal Confirmation Box
