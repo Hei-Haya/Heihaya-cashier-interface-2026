@@ -175,11 +175,16 @@
 
         // 1.5 Unlock Analytics Function
         function unlockAnalytics() {
-            const enteredPin = prompt("Enter Owner PIN to view analytics:");
+            const pinInput = document.getElementById('owner-pin-input');
+            const errorMsg = document.getElementById('pin-error');
+            const enteredPin = pinInput.value.trim();
             
             if (enteredPin === OWNER_PIN) {
-                // Hide the lock overlay
-                document.getElementById('analytics-overlay').style.display = 'none';
+                // Smoothly fade out the lock overlay
+                document.getElementById('analytics-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('analytics-overlay').style.display = 'none';
+                }, 500);
                 
                 // Show loading states
                 document.getElementById('today-income').innerText = "Loading...";
@@ -188,8 +193,16 @@
                 // Fetch the data ONLY after unlocked
                 loadDashboardStats(`IM-${currentYear}-${currentMonth}-${currentDay}`, 'today');
                 loadDashboardStats(`IM-${currentYear}-${currentMonth}`, 'month');
-            } else if (enteredPin !== null) {
-                alert("Incorrect PIN. Access Denied.");
+            } else {
+                // Show error message and clear input
+                errorMsg.style.opacity = '1';
+                pinInput.value = '';
+                pinInput.focus();
+                
+                // Hide error message after 2 seconds
+                setTimeout(() => {
+                    errorMsg.style.opacity = '0';
+                }, 2000);
             }
         }
 
