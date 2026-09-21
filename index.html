@@ -278,7 +278,11 @@
                 .then(data => {
                     document.getElementById(`${target}-income`).innerText = `₹${data.income.toFixed(2)}`;
                     document.getElementById(`${target}-count`).innerText = `${data.count} orders`;
-                }).catch(err => console.error("Error loading stats:", err));
+                }).catch(err => {
+                    console.error("Error loading stats:", err);
+                    document.getElementById(`${target}-income`).innerText = "Error";
+                    document.getElementById(`${target}-count`).innerText = "Failed";
+                });
         }
 
         // 4. Analytics Custom Search Function
