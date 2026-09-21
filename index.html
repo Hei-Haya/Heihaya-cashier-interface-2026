@@ -146,25 +146,47 @@
 
     <script>
         // ADD YOUR DEPLOYED GOOGLE SCRIPT URL HERE
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfSy87lXL1EiHTOydqiFj7Vapvr_u17XacU02Vi7L62IfPIPtorpZxA8ar6ku0455v/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpuk3KCAqIrqXSNsu2OrfZNQDVtqV6U5y6pIX0hjXeLE44LM-ODvyM6Bez6Heav9o/exec";
+        
         const CASHIER_PIN = "3333";
+        const OWNER_PIN = "8888"; // New PIN for analytics
+        
         let todayPrefix = "";
+        let currentYear = "";
+        let currentMonth = "";
+        let currentDay = "";
 
-        // 1. Initialize Page and Dashboard on Load
-document.addEventListener("DOMContentLoaded", () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = ("0" + (today.getMonth() + 1)).slice(-2);
-    const day = ("0" + today.getDate()).slice(-2);
-    
-    // Set Cashier Prefix dynamically
-    todayPrefix = `IM-${year}-${month}-${day}-`;
-    document.getElementById('prefix-display').innerText = todayPrefix;
+        // 1. Initialize Page on Load (DOES NOT load analytics yet)
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date();
+            currentYear = today.getFullYear();
+            currentMonth = ("0" + (today.getMonth() + 1)).slice(-2);
+            currentDay = ("0" + today.getDate()).slice(-2);
+            
+            // Set Cashier Prefix dynamically
+            todayPrefix = `IM-${currentYear}-${currentMonth}-${currentDay}-`;
+            document.getElementById('prefix-display').innerText = todayPrefix;
+        });
 
-    // Load initial dashboard data automatically
-    loadDashboardStats(`IM-${year}-${month}-${day}`, 'today');
-    loadDashboardStats(`IM-${year}-${month}`, 'month');
-});
+        // 1.5 Unlock Analytics Function
+        function unlockAnalytics() {
+            const enteredPin = prompt("Enter Owner PIN to view analytics:");
+            
+            if (enteredPin === OWNER_PIN) {
+                // Hide the lock overlay
+                document.getElementById('analytics-overlay').style.display = 'none';
+                
+                // Show loading states
+                document.getElementById('today-income').innerText = "Loading...";
+                document.getElementById('month-income').innerText = "Loading...";
+                
+                // Fetch the data ONLY after unlocked
+                loadDashboardStats(`IM-${currentYear}-${currentMonth}-${currentDay}`, 'today');
+                loadDashboardStats(`IM-${currentYear}-${currentMonth}`, 'month');
+            } else if (enteredPin !== null) {
+                alert("Incorrect PIN. Access Denied.");
+            }
+        }
 
         // 2. Main Print Function
         function fetchAndPrint() {
