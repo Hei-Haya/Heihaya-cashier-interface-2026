@@ -378,15 +378,24 @@
 
         // 3. Analytics Loading Function
         function loadDashboardStats(filterPrefix, target) {
-            fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}`)
+            // Generate a unique timestamp to bypass browser cache
+            const timestamp = new Date().getTime();
+            
+            fetch(`${GOOGLE_SCRIPT_URL}?action=report&filter=${filterPrefix}&t=${timestamp}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById(`${target}-income`).innerText = `₹${data.income.toFixed(2)}`;
                     document.getElementById(`${target}-count`).innerText = `${data.count} orders`;
+                    
+                    // Stop spinning when complete
+                    document.getElementById('refresh-btn').classList.remove('animate-spin');
                 }).catch(err => {
                     console.error("Error loading stats:", err);
                     document.getElementById(`${target}-income`).innerText = "Error";
                     document.getElementById(`${target}-count`).innerText = "Failed";
+                    
+                    // Stop spinning on failure
+                    document.getElementById('refresh-btn').classList.remove('animate-spin');
                 });
         }
 
