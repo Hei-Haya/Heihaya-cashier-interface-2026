@@ -261,11 +261,12 @@
             fetch(`${GOOGLE_SCRIPT_URL}?orderId=${fullOrderId}`)
                 .then(response => response.json())
                 .then(data => {
+                    // Restore original button state
                     fetchBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Find Order`;
                     fetchBtn.disabled = false;
 
                     if (data.error) {
-                        statusMsg.innerText = "Order not found in database. Check date and number.";
+                        statusMsg.innerHTML = "Order <b>" + fullOrderId + "</b> not found in database.";
                         statusMsg.classList.remove('hidden');
                         return;
                     }
@@ -295,7 +296,8 @@
                     document.getElementById('preview-section').classList.remove('hidden');
                 })
                 .catch(err => {
-                    fetchBtn.innerHTML = `Find Order`;
+                    // Restore original button state on network failure
+                    fetchBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Find Order`;
                     fetchBtn.disabled = false;
                     statusMsg.innerText = "Network error. Please try again.";
                     statusMsg.classList.remove('hidden');
